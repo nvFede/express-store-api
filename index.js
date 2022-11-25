@@ -1,5 +1,5 @@
 const express = require('express');
-
+const cors = require('cors');
 const routerApi = require('./routes');
 
 const {
@@ -10,6 +10,20 @@ const {
 
 const app = express();
 app.use(express.json());
+
+const whitelist = ['domainList'];
+const options = {
+  origin: (origin, options) => {
+    if (whitelist.includes(origin)) {
+      options(null, true);
+    } else {
+      options(new Error('Invalid whitelist'));
+    }
+  },
+};
+// app.use(cors(options));
+app.use(cors());
+
 const port = 3001 || process.env.PORT;
 
 app.get('/', (req, res) => {
